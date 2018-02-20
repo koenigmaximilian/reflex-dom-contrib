@@ -26,7 +26,7 @@ import           Reflex
 import           Reflex.Dom.Core
 import           Reflex.Dom.Contrib.Utils
 import           Reflex.Dom.Contrib.Widgets.Common
-import           GHCJS.DOM.Types (MonadJSM, liftJSM)
+import           GHCJS.DOM.Types (MonadJSM)
 ------------------------------------------------------------------------------
 
 
@@ -45,7 +45,7 @@ data EditState = Viewing
 -- on the text.  Edits are saved when the user presses enter or abandoned if
 -- the user presses escape or the text input loses focus.
 editInPlace
-    :: (MonadWidget t m, MonadJSM m)
+    :: MonadWidget t m
     => Behavior t Bool
     -- ^ Whether or not click-to-edit is enabled
     -> Dynamic t Text
@@ -85,7 +85,7 @@ e2maybe (NameChange s) = Just s
 
 ------------------------------------------------------------------------------
 chooser
-    :: (MonadWidget t m, MonadJSM m)
+    :: MonadWidget t m
     => Dynamic t Text
     -> EditState
     -> m (Event t SheetEditEvent)
@@ -101,7 +101,7 @@ data SheetEditEvent = NameChange Text
 
 ------------------------------------------------------------------------------
 editor
-    :: (MonadWidget t m, MonadJSM m)
+    :: MonadWidget t m
     => Dynamic t Text
     -> m (Event t SheetEditEvent)
 editor name = do
@@ -109,7 +109,7 @@ editor name = do
   (e,w) <- htmlTextInput' "text" $ WidgetConfig
     (tagPromptlyDyn name pb) "" (constDyn mempty)
   performEvent_ $ ffor pb $ \_ -> do
-    liftJSM $ focus e
+    liftIO $ focus e
   let acceptEvent = leftmost
         [ () <$ ffilter (==13) (_hwidget_keypress w)
         , () <$ ffilter not (updated $ _hwidget_hasFocus w)
@@ -128,4 +128,3 @@ viewer
 viewer name = do
   dynText name
   return never
-
