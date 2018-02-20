@@ -45,7 +45,7 @@ data EditState = Viewing
 -- on the text.  Edits are saved when the user presses enter or abandoned if
 -- the user presses escape or the text input loses focus.
 editInPlace
-    :: (MonadWidget t m, MonadJSM IO)
+    :: (MonadWidget t m, MonadJSM m)
     => Behavior t Bool
     -- ^ Whether or not click-to-edit is enabled
     -> Dynamic t Text
@@ -85,7 +85,7 @@ e2maybe (NameChange s) = Just s
 
 ------------------------------------------------------------------------------
 chooser
-    :: (MonadWidget t m, MonadJSM IO)
+    :: (MonadWidget t m, MonadJSM m)
     => Dynamic t Text
     -> EditState
     -> m (Event t SheetEditEvent)
@@ -101,7 +101,7 @@ data SheetEditEvent = NameChange Text
 
 ------------------------------------------------------------------------------
 editor
-    :: (MonadWidget t m, MonadJSM IO)
+    :: (MonadWidget t m, MonadJSM m)
     => Dynamic t Text
     -> m (Event t SheetEditEvent)
 editor name = do
