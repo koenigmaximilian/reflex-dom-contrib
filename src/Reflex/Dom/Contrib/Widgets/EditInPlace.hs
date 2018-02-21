@@ -110,7 +110,7 @@ editor name = do
   (e,w) <- htmlTextInput' "text" $ WidgetConfig
     (tagPromptlyDyn name pb) "" (constDyn mempty)
   performEvent_ $ ffor pb $ \_ -> do
-    liftIO $ focus e
+    liftJSM $ focus e
   let acceptEvent = leftmost
         [ () <$ ffilter (==13) (_hwidget_keypress w)
         , () <$ ffilter not (updated $ _hwidget_hasFocus w)
